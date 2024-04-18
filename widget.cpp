@@ -183,6 +183,7 @@ void Widget::updatePosition()
     if(m_bird.m_life)
     {
         land();
+        landN();
     }
 
 
@@ -190,6 +191,7 @@ void Widget::updatePosition()
     if(m_bird.n_life)
     {
         landN();
+        land();
     }
 
 
@@ -467,6 +469,32 @@ void Widget::paintEvent(QPaintEvent *)
 
     painter.drawPixmap(m_bird.m_X,m_bird.m_Y,m_bird.m_Bird);
     painter.drawPixmap(m_bird.n_X,m_bird.n_Y,m_bird.n_Bird);
+
+
+    // 曲线上的点
+    QList<QPointF> points = QList<QPointF>() << QPointF(m_bird.m_X+m_bird.m_Bird.width()*0.25, m_bird.m_Y-m_bird.m_Bird.height()*0.6)
+                                                << QPointF(m_bird.m_X*0.5+m_bird.n_X*0.5, (m_bird.m_Y+m_bird.n_Y)*0.5+30)
+                                                << QPointF(m_bird.n_X+m_bird.n_Bird.width()*0.25, m_bird.n_Y-m_bird.n_Bird.height()*0.6);
+    QPainterPath path(points[0]);
+    for (int i = 0; i < points.size() - 1; ++i) {
+        QPointF sp = points[i];
+        QPointF ep = points[i+1];
+        QPointF c1 = QPointF((sp.x() + ep.x()) / 2, sp.y());
+        QPointF c2 = QPointF((sp.x() + ep.x()) / 2, ep.y());
+        path.cubicTo(c1, c2, ep);
+    }
+    //设置渲染提示为消除锯齿
+    painter.setRenderHint(QPainter::Antialiasing, true);
+    //设置画笔颜色和宽度
+    painter.setPen(QPen(Qt::green, 5));
+    //将坐标系转换为矢量
+    painter.translate(40, 130);
+    //绘制path
+    painter.drawPath(path);
+
+
+
+
 }
 
 void Widget::mousePressEvent(QMouseEvent *event)
