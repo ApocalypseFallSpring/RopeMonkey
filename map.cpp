@@ -13,7 +13,9 @@ Map::Map()
     m_map_scroll = MAP_SPEED;
 
 
+
 }
+
 
 void Map::mapPosition()
 {

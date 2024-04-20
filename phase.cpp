@@ -11,7 +11,7 @@ Phase::Phase()
 
     m_free = true;
 
-    m_speed =PHASE_SPEED;
+    m_speed = PHASE_SPEED;
 
 
 }
@@ -39,7 +39,7 @@ void Phase::slideBack()
         return;
     }
 
-    m_X -= MAP_SPEED+5;
+    m_X -= MAP_SPEED*2;
     m_Rect.moveTo(m_X,m_Y);
 
     if(m_X < -m_phase.width())
@@ -47,5 +47,3 @@ void Phase::slideBack()
         m_free = true;
     }
 }
-
-
