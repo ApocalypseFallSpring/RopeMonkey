@@ -4,6 +4,7 @@
 #include "config.h"
 #include <QPixmap>
 
+
 class Map
 {
 public:
@@ -22,6 +23,7 @@ public:
     void mapPosition();
 
     void slideBack();
+
 
 
 };

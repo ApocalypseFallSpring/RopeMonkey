@@ -1,7 +1,5 @@
-
 #include "widget.h"
 #include "ui_widget.h"
-#include "config.h"
 
 Widget::Widget(QWidget *parent)
     : QWidget(parent)
@@ -12,6 +10,7 @@ Widget::Widget(QWidget *parent)
     initScence();
 
     playGame();
+
 }
 
 Widget::~Widget()
@@ -33,16 +32,17 @@ void Widget::initScence()
     m_slide.setInterval(GAME_RATE);
 
     m_recorder = 0;
-    cnt = 300;
+    cnt = 200;
 
     srand((unsigned int)time(NULL));
 
 
     m_Phases[0].m_free = false;
-    m_Phases[0].m_X = 600 + rand()%300;
-    m_Phases[0].m_Y = rand()%350 + 500;
+    m_Phases[0].m_X = 400 + rand()%100;
+    m_Phases[0].m_Y = rand()%350 + 700;
     cnt = m_Phases[0].m_X;
     m_Phases[0].m_Rect.moveTo(m_Phases[0].m_X,m_Phases[0].m_Y);
+
 
 
 }
@@ -59,9 +59,9 @@ void Widget::playGame()
 
     connect(&m_timer, &QTimer::timeout,[=](){
 
-        if(m_bird.m_free == false || m_bird.n_free == false)
+        if(m_monkey.m_free == false || m_monkey.n_free == false)
         {
-            if(m_bird.m_life||m_bird.n_life)
+            if(m_monkey.m_life||m_monkey.n_life)
             {
                 phaseToScene();
 
@@ -79,23 +79,23 @@ void Widget::playGame()
     });
 
     connect(&m_back, &QTimer::timeout, [=](){
-        if(m_bird.m_free)
+        if(m_monkey.m_free)
         {
             fall();
-            if(m_bird.m_land == false)
+            if(m_monkey.m_land == false)
             {
-                m_bird.down();
-                m_bird.m_life = false;
+                m_monkey.down();
+                m_monkey.m_life = false;
             }
         }
 
-        if(m_bird.n_free)
+        if(m_monkey.n_free)
         {
             fallN();
-            if(m_bird.n_land == false)
+            if(m_monkey.n_land == false)
             {
-                m_bird.downN();
-                m_bird.n_life = false;
+                m_monkey.downN();
+                m_monkey.n_life = false;
             }
         }
 
@@ -106,28 +106,28 @@ void Widget::playGame()
 
     connect(&m_dis, &QTimer::timeout,[=](){
 
-        m_bird.disElastic();
-        if(m_bird.m_life == false)
+        m_monkey.disElastic();
+        if(m_monkey.m_life == false)
         {
             recover();
-            if(m_bird.m_land == false)
+            if(m_monkey.m_land == false)
             {
-                m_bird.down();
+                m_monkey.down();
             }
         }
-        if(m_bird.n_life == false)
+        if(m_monkey.n_life == false)
         {
             recoverN();
-            if(m_bird.n_land == false)
+            if(m_monkey.n_land == false)
             {
-                m_bird.downN();
+                m_monkey.downN();
             }
         }
 
-        if(m_bird.m_life == false && m_bird.n_life == false)
+        if(m_monkey.m_life == false && m_monkey.n_life == false)
         {
-            m_bird.down();
-            m_bird.downN();
+            m_monkey.down();
+            m_monkey.downN();
         }
 
         update();
@@ -138,14 +138,14 @@ void Widget::playGame()
 
         if(slide)
         {
-            if((m_bird.m_free && m_bird.m_land && m_bird.n_free && m_bird.n_land && m_bird.m_life && m_bird.n_life) || (m_bird.m_free && m_bird.m_land && m_bird.m_life && !m_bird.n_life) || (m_bird.n_free && m_bird.n_land && m_bird.n_life && !m_bird.m_life))
+            if((m_monkey.m_free && m_monkey.m_land && m_monkey.n_free && m_monkey.n_land && m_monkey.m_life && m_monkey.n_life) || (m_monkey.m_free && m_monkey.m_land && m_monkey.m_life && !m_monkey.n_life) || (m_monkey.n_free && m_monkey.n_land && m_monkey.n_life && !m_monkey.m_life))
             {
 
-                    m_bird.slideBack();
-                    m_bird.sildeBackN();
+                    m_monkey.slideBack();
+                    m_monkey.sildeBackN();
 
                     phaseToScene();
-                    m_bird.updatePosition();
+                    m_monkey.updatePosition();
                     m_map.slideBack();
                     m_Stage.updatePosition();
 
@@ -159,7 +159,7 @@ void Widget::playGame()
                     }
 
             }
-            if(m_bird.m_X < 0.3 * GAME_WIDTH && m_bird.n_X < 0.3 * GAME_WIDTH)
+            if(m_monkey.m_X < 0.35 * GAME_WIDTH && m_monkey.n_X < 0.35 * GAME_WIDTH)
             {
                 slide = false;
             }
@@ -171,24 +171,20 @@ void Widget::playGame()
 
 
 
-
-
-
-
 }
 
 void Widget::updatePosition()
 {
-    m_bird.updatePosition();
-    if(m_bird.m_life)
+    m_monkey.updatePosition();
+    if(m_monkey.m_life)
     {
         land();
         landN();
     }
 
 
-    m_bird.updatePositionN();
-    if(m_bird.n_life)
+    m_monkey.updatePositionN();
+    if(m_monkey.n_life)
     {
         landN();
         land();
@@ -197,9 +193,9 @@ void Widget::updatePosition()
 
 
 
-    if(m_bird.m_free == false || m_bird.n_free == false)
+    if(m_monkey.m_free == false || m_monkey.n_free == false)
     {
-        if(m_bird.m_life || m_bird.n_life)
+        if(m_monkey.m_life || m_monkey.n_life)
         {
             m_map.mapPosition();
 
@@ -217,7 +213,7 @@ void Widget::updatePosition()
         }
     }
 
-    if(m_bird.m_X > 0.6 * GAME_WIDTH || m_bird.n_X > 0.6 * GAME_WIDTH)
+    if(m_monkey.m_X > 0.6 * GAME_WIDTH || m_monkey.n_X > 0.6 * GAME_WIDTH)
     {
         slide = true;
     }
@@ -225,8 +221,6 @@ void Widget::updatePosition()
 
 
 }
-
-
 
 void Widget::phaseToScene()
 {
@@ -244,8 +238,8 @@ void Widget::phaseToScene()
         {
             m_Phases[i].m_free = false;
 
-            m_Phases[i].m_X = cnt + 200 + rand()%300;
-            m_Phases[i].m_Y = rand()%350 + 500;
+            m_Phases[i].m_X = cnt + 75 + rand()%100;
+            m_Phases[i].m_Y = rand()%400 + 500;
 
             cnt = m_Phases[i].m_X;
 
@@ -258,13 +252,13 @@ void Widget::phaseToScene()
 
 void Widget::land()
 {
-    if(m_bird.m_Rect.intersects(m_Stage.m_Rect))
+    if(m_monkey.m_Rect.intersects(m_Stage.m_Rect))
     {
-        m_bird.setPosition(m_bird.m_X,m_Stage.m_Y-m_bird.m_Rect.height()-1);
-        m_bird.v_Y = 0;
-        m_bird.m_free = true;
-        m_bird.m_limit = false;
-        m_bird.m_land = true;
+        m_monkey.setPosition(m_monkey.m_X,m_Stage.m_Y-m_monkey.m_Rect.height()-1);
+        m_monkey.v_Y = 0;
+        m_monkey.m_free = true;
+        m_monkey.m_limit = false;
+        m_monkey.m_land = true;
     }
 
 
@@ -275,22 +269,22 @@ void Widget::land()
             continue;
         }
 
-        if(m_bird.m_Rect.intersects(m_Phases[i].m_Rect))
+        if(m_monkey.m_Rect.intersects(m_Phases[i].m_Rect))
         {
-            if(m_bird.m_Y > m_Phases[i].m_Y + m_bird.m_Bird.height()*0.3)
+            if(m_monkey.m_Y > m_Phases[i].m_Y - m_monkey.m_Monkey.height()*0.3)
             {
                 break;
             }
 
 
-            if(m_bird.m_X + m_bird.m_Bird.width() * 0.7 >= m_Phases[i].m_X && m_bird.m_X+m_bird.m_Bird.width() * 0.3 <= m_Phases[i].m_X +m_Phases[i].m_phase.width())
+            if(m_monkey.m_X + m_monkey.m_Monkey.width() * 0.7 >= m_Phases[i].m_X && m_monkey.m_X+m_monkey.m_Monkey.width() * 0.9 <= m_Phases[i].m_X +m_Phases[i].m_phase.width())
             {
-                m_bird.m_Y = m_Phases[i].m_Y - m_bird.m_Rect.height() - 1 ;
-                m_bird.v_Y = 0;
-                m_bird.m_free = true;
-                m_bird.m_limit = false;
-                m_bird.setPosition(m_bird.m_X, m_bird.m_Y);
-                m_bird.m_land = true;
+                m_monkey.m_Y = m_Phases[i].m_Y - m_monkey.m_Rect.height() - 1 ;
+                m_monkey.v_Y = 0;
+                m_monkey.m_free = true;
+                m_monkey.m_limit = false;
+                m_monkey.setPosition(m_monkey.m_X, m_monkey.m_Y);
+                m_monkey.m_land = true;
                 break;
             }
         }
@@ -303,13 +297,13 @@ void Widget::land()
 void Widget::landN()
 {
 
-    if(m_bird.n_Rect.intersects(m_Stage.m_Rect))
+    if(m_monkey.n_Rect.intersects(m_Stage.m_Rect))
     {
-        m_bird.setPositionN(m_bird.n_X,m_Stage.m_Y-m_bird.n_Rect.height()-1);
-        m_bird.v_n_Y = 0;
-        m_bird.n_free = true;
-        m_bird.n_limit = false;
-        m_bird.n_land = true;
+        m_monkey.setPositionN(m_monkey.n_X,m_Stage.m_Y-m_monkey.n_Rect.height()-1);
+        m_monkey.v_n_Y = 0;
+        m_monkey.n_free = true;
+        m_monkey.n_limit = false;
+        m_monkey.n_land = true;
     }
 
 
@@ -320,21 +314,21 @@ void Widget::landN()
             continue;
         }
 
-        if(m_bird.n_Rect.intersects(m_Phases[i].m_Rect))
+        if(m_monkey.n_Rect.intersects(m_Phases[i].m_Rect))
         {
-            if(m_bird.n_Y > m_Phases[i].m_Y + m_bird.n_Bird.height()*0.3)
+            if(m_monkey.n_Y > m_Phases[i].m_Y - m_monkey.n_Monkey.height()*0.3)
             {
                 break;
             }
 
-            if(m_bird.n_X + m_bird.n_Bird.width() * 0.7 >= m_Phases[i].m_X && m_bird.n_X+m_bird.n_Bird.width() * 0.3 <= m_Phases[i].m_X +m_Phases[i].m_phase.width())
+            if(m_monkey.n_X + m_monkey.n_Monkey.width() * 0.7 >= m_Phases[i].m_X && m_monkey.n_X+m_monkey.n_Monkey.width() * 0.9 <= m_Phases[i].m_X +m_Phases[i].m_phase.width())
             {
-                m_bird.n_Y = m_Phases[i].m_Y - m_bird.n_Rect.height() - 1 ;
-                m_bird.v_n_Y = 0;
-                m_bird.n_free = true;
-                m_bird.n_limit = false;
-                m_bird.setPositionN(m_bird.n_X, m_bird.n_Y);
-                m_bird.n_land = true;
+                m_monkey.n_Y = m_Phases[i].m_Y - m_monkey.n_Rect.height() - 1 ;
+                m_monkey.v_n_Y = 0;
+                m_monkey.n_free = true;
+                m_monkey.n_limit = false;
+                m_monkey.setPositionN(m_monkey.n_X, m_monkey.n_Y);
+                m_monkey.n_land = true;
                 break;
             }
         }
@@ -356,14 +350,14 @@ void Widget::recover()
 
 
 
-            if(m_bird.m_Y + m_bird.m_Rect.height() * 0.8 < m_Phases[i].m_Y && m_bird.m_X + m_bird.m_Bird.width() * 0.7 > m_Phases[i].m_X && m_bird.m_X+m_bird.m_Bird.width() * 0.3 <= m_Phases[i].m_X +m_Phases[i].m_phase.width())
+            if(m_monkey.m_Y + m_monkey.m_Rect.height() * 0.8 < m_Phases[i].m_Y && m_monkey.m_X + m_monkey.m_Monkey.width() * 0.7 > m_Phases[i].m_X && m_monkey.m_X+m_monkey.m_Monkey.width() * 0.3 <= m_Phases[i].m_X +m_Phases[i].m_phase.width())
             {
-                m_bird.m_Y = m_Phases[i].m_Y - m_bird.m_Rect.height() - 1;
-                m_bird.v_Y = 0;
-                m_bird.m_free = true;
-                m_bird.m_life = true;
-                m_bird.m_land = true;
-                m_bird.setPosition(m_bird.m_X, m_bird.m_Y);
+                m_monkey.m_Y = m_Phases[i].m_Y - m_monkey.m_Rect.height() - 1;
+                m_monkey.v_Y = 0;
+                m_monkey.m_free = true;
+                m_monkey.m_life = true;
+                m_monkey.m_land = true;
+                m_monkey.setPosition(m_monkey.m_X, m_monkey.m_Y);
                 break;
             }
     }
@@ -381,14 +375,14 @@ void Widget::recoverN()
 
 
 
-            if(m_bird.n_Y + m_bird.n_Rect.height() * 0.8 < m_Phases[i].m_Y && m_bird.n_X + m_bird.n_Bird.width() * 0.7 > m_Phases[i].m_X && m_bird.n_X+m_bird.n_Bird.width() * 0.3 <= m_Phases[i].m_X +m_Phases[i].m_phase.width())
+            if(m_monkey.n_Y + m_monkey.n_Rect.height() * 0.8 < m_Phases[i].m_Y && m_monkey.n_X + m_monkey.n_Monkey.width() * 0.7 > m_Phases[i].m_X && m_monkey.n_X+m_monkey.n_Monkey.width() * 0.3 <= m_Phases[i].m_X +m_Phases[i].m_phase.width())
             {
-                m_bird.n_Y = m_Phases[i].m_Y - m_bird.n_Rect.height() - 1;
-                m_bird.v_n_Y = 0;
-                m_bird.n_free = true;
-                m_bird.n_life = true;
-                m_bird.n_land = true;
-                m_bird.setPositionN(m_bird.n_X, m_bird.n_Y);
+                m_monkey.n_Y = m_Phases[i].m_Y - m_monkey.n_Rect.height() - 1;
+                m_monkey.v_n_Y = 0;
+                m_monkey.n_free = true;
+                m_monkey.n_life = true;
+                m_monkey.n_land = true;
+                m_monkey.setPositionN(m_monkey.n_X, m_monkey.n_Y);
                 break;
             }
     }
@@ -396,12 +390,12 @@ void Widget::recoverN()
 
 void Widget::fall()
 {
-    m_bird.m_land = false;
+    m_monkey.m_land = false;
 
-    if(m_bird.m_X + m_bird.m_Bird.width() * 0.3 >= m_Stage.m_X && m_bird.m_X+m_bird.m_Bird.width() * 0.3 <= m_Stage.m_X +m_Stage.m_stage.width())
+    if(m_monkey.m_X + m_monkey.m_Monkey.width() * 0.3 >= m_Stage.m_X && m_monkey.m_X+m_monkey.m_Monkey.width() * 0.3 <= m_Stage.m_X +m_Stage.m_stage.width())
     {
 
-        m_bird.m_land = true;
+        m_monkey.m_land = true;
     }
 
     for(int i = 0;i<PHASE_NUM;i++)
@@ -411,9 +405,9 @@ void Widget::fall()
             continue;
         }
 
-        if(m_bird.m_X + m_bird.m_Bird.width() * 0.3 >= m_Phases[i].m_X && m_bird.m_X+m_bird.m_Bird.width() * 0.3 <= m_Phases[i].m_X +m_Phases[i].m_phase.width())
+        if(m_monkey.m_X + m_monkey.m_Monkey.width() * 0.3 >= m_Phases[i].m_X && m_monkey.m_X+m_monkey.m_Monkey.width() * 0.3 <= m_Phases[i].m_X +m_Phases[i].m_phase.width())
         {
-            m_bird.m_land = true;
+            m_monkey.m_land = true;
             break;
         }
 
@@ -424,12 +418,12 @@ void Widget::fall()
 
 void Widget::fallN()
 {
-    m_bird.n_land = false;
+    m_monkey.n_land = false;
 
-    if(m_bird.n_X + m_bird.n_Bird.width() * 0.3 >= m_Stage.m_X && m_bird.n_X+m_bird.n_Bird.width() * 0.3 <= m_Stage.m_X +m_Stage.m_stage.width())
+    if(m_monkey.n_X + m_monkey.n_Monkey.width() * 0.3 >= m_Stage.m_X && m_monkey.n_X+m_monkey.n_Monkey.width() * 0.3 <= m_Stage.m_X +m_Stage.m_stage.width())
     {
 
-        m_bird.n_land = true;
+        m_monkey.n_land = true;
     }
 
     for(int i = 0;i<PHASE_NUM;i++)
@@ -439,15 +433,17 @@ void Widget::fallN()
             continue;
         }
 
-        if(m_bird.n_X + m_bird.n_Bird.width() * 0.3 >= m_Phases[i].m_X && m_bird.n_X+m_bird.n_Bird.width() * 0.3 <= m_Phases[i].m_X +m_Phases[i].m_phase.width())
+        if(m_monkey.n_X + m_monkey.n_Monkey.width() * 0.3 >= m_Phases[i].m_X && m_monkey.n_X+m_monkey.n_Monkey.width() * 0.3 <= m_Phases[i].m_X +m_Phases[i].m_phase.width())
         {
-            m_bird.n_land = true;
+            m_monkey.n_land = true;
             break;
         }
 
 
     }
 }
+
+
 
 
 void Widget::paintEvent(QPaintEvent *)
@@ -467,14 +463,14 @@ void Widget::paintEvent(QPaintEvent *)
     }
 
 
-    painter.drawPixmap(m_bird.m_X,m_bird.m_Y,m_bird.m_Bird);
-    painter.drawPixmap(m_bird.n_X,m_bird.n_Y,m_bird.n_Bird);
+    painter.drawPixmap(m_monkey.m_X,m_monkey.m_Y,m_monkey.m_Monkey);
+    painter.drawPixmap(m_monkey.n_X,m_monkey.n_Y,m_monkey.n_Monkey);
 
 
     // 曲线上的点
-    QList<QPointF> points = QList<QPointF>() << QPointF(m_bird.m_X+m_bird.m_Bird.width()*0.25, m_bird.m_Y-m_bird.m_Bird.height()*0.6)
-                                                << QPointF(m_bird.m_X*0.5+m_bird.n_X*0.5, (m_bird.m_Y+m_bird.n_Y)*0.5+30)
-                                                << QPointF(m_bird.n_X+m_bird.n_Bird.width()*0.25, m_bird.n_Y-m_bird.n_Bird.height()*0.6);
+    QList<QPointF> points = QList<QPointF>() << QPointF(m_monkey.m_X+m_monkey.m_Monkey.width()*0.1, m_monkey.m_Y-m_monkey.m_Monkey.height()*0.8)
+                                                << QPointF(m_monkey.m_X*0.5+m_monkey.n_X*0.5, (m_monkey.m_Y+m_monkey.n_Y)*0.5+30)
+                                                << QPointF(m_monkey.n_X+m_monkey.n_Monkey.width()*0.1, m_monkey.n_Y-m_monkey.n_Monkey.height()*0.8);
     QPainterPath path(points[0]);
     for (int i = 0; i < points.size() - 1; ++i) {
         QPointF sp = points[i];
@@ -494,8 +490,8 @@ void Widget::paintEvent(QPaintEvent *)
 
 
 
-
 }
+
 
 void Widget::mousePressEvent(QMouseEvent *event)
 {
@@ -518,9 +514,9 @@ void Widget::mouseReleaseEvent(QMouseEvent *event)
     if(event->button()==Qt::LeftButton)
     {
         time_lens = time_len.msecsTo(QTime::currentTime());
-        if(m_bird.m_life)
+        if(m_monkey.m_life)
         {
-            m_bird.jumpSet(time_lens);
+            m_monkey.jumpSet(time_lens);
         }
 
 
@@ -529,17 +525,12 @@ void Widget::mouseReleaseEvent(QMouseEvent *event)
     if(event->button()==Qt::RightButton)
     {
         time_lens_n = time_len_n.msecsTo(QTime::currentTime());
-        if(m_bird.n_life)
+        if(m_monkey.n_life)
         {
-            m_bird.jumpFollow(time_lens_n);
+            m_monkey.jumpFollow(time_lens_n);
         }
 
 
     }
-    //bird_1_or_2 *= -1;
 
 }
-
-
-
-

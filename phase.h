@@ -25,8 +25,6 @@ public:
 
     void slideBack();
 
-
-
 };
 
 #endif // PHASE_H

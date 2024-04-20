@@ -4,15 +4,16 @@
 #include <QWidget>
 #include <QIcon>
 #include <QPainter>
-#include "map.h"
 #include <QTimer>
-#include "bird.h"
 #include <QMouseEvent>
 #include <QTime>
-#include <QKeyEvent>
-#include "phase.h"
 #include <ctime>
+#include "config.h"
+#include "map.h"
+#include "monkey.h"
 #include "stage.h"
+#include "phase.h"
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class Widget; }
@@ -26,10 +27,9 @@ public:
     Widget(QWidget *parent = nullptr);
     ~Widget();
 
-
     Map m_map;
 
-    Bird m_bird;
+    Monkey m_monkey;
 
     Phase m_Phases[PHASE_NUM];
     int m_recorder;
@@ -46,7 +46,6 @@ public:
 
     bool flag1 = false;
     bool flag2 = false;
-
 
 
     void initScence();
@@ -70,21 +69,17 @@ public:
     void fallN();
 
 
-
     void paintEvent(QPaintEvent *);
 
     void mousePressEvent(QMouseEvent *);
     void mouseReleaseEvent(QMouseEvent *);
-    //void mouseMoveEvent(QMouseEvent *);
+
     QTime time_len;
     int time_lens;
 
-    //void keyPressEvent(QKeyEvent *);
-    //void keyReleaseEvent(QKeyEvent *);
     QTime time_len_n;
     int time_lens_n;
 
-    int bird_1_or_2 = -1;
 
 
 

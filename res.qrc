@@ -1,28 +1,11 @@
 <RCC>
     <qresource prefix="/">
-        <file>res/BackButton.png</file>
-        <file>res/BackButtonSelected.png</file>
-        <file>res/background.jpeg</file>
-        <file>res/boom.png</file>
-        <file>res/bord.jpg</file>
-        <file>res/choose.jpg</file>
-        <file>res/exit.png</file>
-        <file>res/hide.png</file>
-        <file>res/icon.png</file>
-        <file>res/LevelIcon.png</file>
-        <file>res/log.jpeg</file>
-        <file>res/obstacles_1.png</file>
-        <file>res/obstacles_2.png</file>
-        <file>res/obstacles_3.png</file>
-        <file>res/pig.png</file>
-        <file>res/red_bird.png</file>
-        <file>res/show.png</file>
-        <file>res/start.jpg</file>
-        <file>res/wood.png</file>
-        <file>res/yellow_bird.png</file>
-        <file>res/bord_new.jpg</file>
-        <file>res/red_bird_new.png</file>
-        <file>res/yellow_bird_new.png</file>
-        <file>res/obstacles_1_new.png</file>
+        <file>res/background.png</file>
+        <file>res/monkey1.png</file>
+        <file>res/monkey2.png</file>
+        <file>res/phase.png</file>
+        <file>res/monkey1_s.png</file>
+        <file>res/monkey2_s.png</file>
+        <file>res/phase_n.png</file>
     </qresource>
 </RCC>
