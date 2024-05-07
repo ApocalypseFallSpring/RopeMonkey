@@ -58,7 +58,7 @@ void Widget::initScence()
     m_Phases[0].m_free = false;
     m_Phases[0].m_X = 400 + rand()%100;
     m_Phases[0].m_Y = rand()%350 + 700;
-    cnt = m_Phases[0].m_X;
+    cnt = m_Phases[0].m_X+160;
     m_Phases[0].m_Rect.moveTo(m_Phases[0].m_X,m_Phases[0].m_Y);
 
 
@@ -217,6 +217,9 @@ void Widget::updatePosition()
         landN();
         getGold();
         instantOver();
+        fall();
+        fallN();
+
     }
 
 
@@ -227,6 +230,8 @@ void Widget::updatePosition()
         land();
         getGold();
         instantOver();
+        fall();
+        fallN();
     }
 
 
@@ -252,7 +257,7 @@ void Widget::updatePosition()
         }
     }
 
-    if(m_monkey.m_X > 0.6 * GAME_WIDTH || m_monkey.n_X > 0.6 * GAME_WIDTH)
+    if(m_monkey.m_X > 650 || m_monkey.n_X > 650)
     {
         slide = true;
     }
@@ -277,10 +282,10 @@ void Widget::phaseToScene()
         {
             m_Phases[i].m_free = false;
 
-            m_Phases[i].m_X = cnt + 75 + rand()%100;
+            m_Phases[i].m_X = cnt + rand()%100;
             m_Phases[i].m_Y = rand()%400 + 500;
 
-            cnt = m_Phases[i].m_X;
+            cnt = m_Phases[i].m_X+ 160;
 
             m_Phases[i].m_Rect.moveTo(m_Phases[i].m_X,m_Phases[i].m_Y);
 
@@ -364,6 +369,7 @@ void Widget::land()
         m_monkey.v_Y = 0;
         m_monkey.m_free = true;
         m_monkey.m_limit = false;
+        m_monkey.m_life = true;
         m_monkey.m_land = true;
     }
 
@@ -377,18 +383,23 @@ void Widget::land()
 
         if(m_monkey.m_Rect.intersects(m_Phases[i].m_Rect))
         {
-            if(m_monkey.m_Y > m_Phases[i].m_Y - m_monkey.m_Monkey.height()*0.3)
+
+            if(m_monkey.m_Y + 84 > m_Phases[i].m_Y + 20)
             {
+                m_monkey.m_life = false;
+                m_monkey.m_limit = true;
+                m_monkey.m_free = true;
                 break;
             }
 
 
-            if(m_monkey.m_X + m_monkey.m_Monkey.width() >= m_Phases[i].m_X && m_monkey.m_X+m_monkey.m_Monkey.width() * 0.9 <= m_Phases[i].m_X +m_Phases[i].m_phase.width())
+            if(m_monkey.m_X + 30 >= m_Phases[i].m_X && m_monkey.m_X < m_Phases[i].m_X + 159 - 30)
             {
                 m_monkey.m_Y = m_Phases[i].m_Y - m_monkey.m_Rect.height() - 1 ;
                 m_monkey.v_Y = 0;
                 m_monkey.m_free = true;
                 m_monkey.m_limit = false;
+                m_monkey.m_life = true;
                 m_monkey.setPosition(m_monkey.m_X, m_monkey.m_Y);
                 m_monkey.m_land = true;
                 distance += m_monkey.m_X%100;
@@ -411,6 +422,7 @@ void Widget::landN()
         m_monkey.v_n_Y = 0;
         m_monkey.n_free = true;
         m_monkey.n_limit = false;
+        m_monkey.n_life = true;
         m_monkey.n_land = true;
     }
 
@@ -424,20 +436,24 @@ void Widget::landN()
 
         if(m_monkey.n_Rect.intersects(m_Phases[i].m_Rect))
         {
-            if(m_monkey.n_Y > m_Phases[i].m_Y - m_monkey.n_Monkey.height()*0.3)
+            if(m_monkey.n_Y + 84 > m_Phases[i].m_Y + 20)
             {
+                m_monkey.n_life = false;
+                m_monkey.n_limit = true;
+                m_monkey.n_free = true;
                 break;
             }
 
-            if(m_monkey.n_X + m_monkey.n_Monkey.width() >= m_Phases[i].m_X && m_monkey.n_X+m_monkey.n_Monkey.width() * 0.9 <= m_Phases[i].m_X +m_Phases[i].m_phase.width())
+            if(m_monkey.n_X + 30 > m_Phases[i].m_X && m_monkey.n_X < m_Phases[i].m_X + 159 - 30)
             {
                 m_monkey.n_Y = m_Phases[i].m_Y - m_monkey.n_Rect.height() - 1 ;
                 m_monkey.v_n_Y = 0;
                 m_monkey.n_free = true;
                 m_monkey.n_limit = false;
+                m_monkey.n_life = true;
                 m_monkey.setPositionN(m_monkey.n_X, m_monkey.n_Y);
                 m_monkey.n_land = true;
-                distance += m_monkey.n_X%100;
+                distance += m_monkey.n_X % 100;
                 break;
             }
         }
@@ -459,7 +475,7 @@ void Widget::recover()
 
 
 
-            if(m_monkey.m_Y + m_monkey.m_Rect.height() * 0.8 < m_Phases[i].m_Y && m_monkey.m_X + m_monkey.m_Monkey.width() * 0.7 > m_Phases[i].m_X && m_monkey.m_X+m_monkey.m_Monkey.width() * 0.3 <= m_Phases[i].m_X +m_Phases[i].m_phase.width())
+            if(m_monkey.m_Y + m_monkey.m_Rect.height() < m_Phases[i].m_Y + 40 && m_monkey.m_X + m_monkey.m_Monkey.width() > m_Phases[i].m_X + 20 && m_monkey.m_X < m_Phases[i].m_X +m_Phases[i].m_phase.width() - 20)
             {
                 m_monkey.m_Y = m_Phases[i].m_Y - m_monkey.m_Rect.height() - 1;
                 m_monkey.v_Y = 0;
@@ -485,7 +501,7 @@ void Widget::recoverN()
 
 
 
-            if(m_monkey.n_Y + m_monkey.n_Rect.height() * 0.8 < m_Phases[i].m_Y && m_monkey.n_X + m_monkey.n_Monkey.width() * 0.7 > m_Phases[i].m_X && m_monkey.n_X+m_monkey.n_Monkey.width() * 0.3 <= m_Phases[i].m_X +m_Phases[i].m_phase.width())
+            if(m_monkey.n_Y + m_monkey.n_Rect.height() < m_Phases[i].m_Y +40 && m_monkey.n_X + m_monkey.n_Monkey.width() > m_Phases[i].m_X +20 && m_monkey.n_X < m_Phases[i].m_X +m_Phases[i].m_phase.width() - 20)
             {
                 m_monkey.n_Y = m_Phases[i].m_Y - m_monkey.n_Rect.height() - 1;
                 m_monkey.v_n_Y = 0;
@@ -503,7 +519,7 @@ void Widget::fall()
 {
     m_monkey.m_land = false;
 
-    if(m_monkey.m_X + m_monkey.m_Monkey.width() * 0.3 >= m_Stage.m_X && m_monkey.m_X+m_monkey.m_Monkey.width() * 0.3 <= m_Stage.m_X +m_Stage.m_stage.width())
+    if(m_monkey.m_X + m_monkey.m_Monkey.width() * 0.3 >= m_Stage.m_X && m_monkey.m_X+m_monkey.m_Monkey.width() * 0.5 <= m_Stage.m_X +m_Stage.m_stage.width())
     {
 
         m_monkey.m_land = true;
@@ -516,7 +532,7 @@ void Widget::fall()
             continue;
         }
 
-        if(m_monkey.m_X + m_monkey.m_Monkey.width() * 0.3 >= m_Phases[i].m_X && m_monkey.m_X+m_monkey.m_Monkey.width() * 0.3 <= m_Phases[i].m_X +m_Phases[i].m_phase.width())
+        if(m_monkey.m_X + m_monkey.m_Monkey.width() * 0.3 >= m_Phases[i].m_X && m_monkey.m_X+m_monkey.m_Monkey.width() * 0.5 <= m_Phases[i].m_X +m_Phases[i].m_phase.width())
         {
             m_monkey.m_land = true;
             break;
@@ -531,7 +547,7 @@ void Widget::fallN()
 {
     m_monkey.n_land = false;
 
-    if(m_monkey.n_X + m_monkey.n_Monkey.width() * 0.3 >= m_Stage.m_X && m_monkey.n_X+m_monkey.n_Monkey.width() * 0.3 <= m_Stage.m_X +m_Stage.m_stage.width())
+    if(m_monkey.n_X + m_monkey.n_Monkey.width() * 0.3 >= m_Stage.m_X && m_monkey.n_X+m_monkey.n_Monkey.width() * 0.5 <= m_Stage.m_X +m_Stage.m_stage.width())
     {
 
         m_monkey.n_land = true;
@@ -544,7 +560,7 @@ void Widget::fallN()
             continue;
         }
 
-        if(m_monkey.n_X + m_monkey.n_Monkey.width() * 0.3 >= m_Phases[i].m_X && m_monkey.n_X+m_monkey.n_Monkey.width() * 0.3 <= m_Phases[i].m_X +m_Phases[i].m_phase.width())
+        if(m_monkey.n_X + m_monkey.n_Monkey.width() * 0.3 >= m_Phases[i].m_X && m_monkey.n_X+m_monkey.n_Monkey.width() * 0.5 <= m_Phases[i].m_X +m_Phases[i].m_phase.width())
         {
             m_monkey.n_land = true;
             break;
@@ -631,72 +647,44 @@ void Widget::paintEvent(QPaintEvent *)
 }
 
 
-void Widget::mousePressEvent(QMouseEvent *)
+void Widget::mousePressEvent(QMouseEvent *event)
 {
-    time_len = QTime::currentTime();
+    if(event->button()==Qt::LeftButton)
+    {
+        time_len = QTime::currentTime();
+
+    }
+    if(event->button()==Qt::RightButton)
+    {
+        time_len_n = QTime::currentTime();
+    }
+
 
 }
 
-void Widget::mouseReleaseEvent(QMouseEvent *)
+void Widget::mouseReleaseEvent(QMouseEvent *event)
 {
 
-    if(monkey_turn == 1 && m_monkey.m_life)
+    if(event->button()==Qt::LeftButton)
     {
         time_lens = time_len.msecsTo(QTime::currentTime());
-        if(start)
+        if(start && m_monkey.m_life)
         {
             m_monkey.jumpSet(time_lens);
-            monkey_turn *= -1;
+        }
 
-        }
-        if(m_monkey.n_life == false)
-        {
-            monkey_turn *= -1;
-        }
+
     }
-    else if(monkey_turn == -1 && m_monkey.n_life)
-    {
-        time_lens = time_len.msecsTo(QTime::currentTime());
-        if(start)
-        {
-            m_monkey.jumpFollow(time_lens);
-            monkey_turn *= -1;
 
-        }
-        if(m_monkey.m_life == false)
-        {
-            monkey_turn *= -1;
-        }
-    }
-    else if(monkey_turn == 1 && !m_monkey.m_life)
+    if(event->button()==Qt::RightButton)
     {
-        monkey_turn = -1;
-        time_lens = time_len.msecsTo(QTime::currentTime());
-        if(start)
+        time_lens_n = time_len_n.msecsTo(QTime::currentTime());
+        if(start && m_monkey.n_life)
         {
-            m_monkey.jumpFollow(time_lens);
-            monkey_turn *= -1;
+            m_monkey.jumpFollow(time_lens_n);
+        }
 
-        }
-        if(m_monkey.m_life == false)
-        {
-            monkey_turn *= -1;
-        }
-    }
-    else if(monkey_turn == -1 && !m_monkey.n_life)
-    {
-        monkey_turn = 1;
-        time_lens = time_len.msecsTo(QTime::currentTime());
-        if(start)
-        {
-            m_monkey.jumpSet(time_lens);
-            monkey_turn *= -1;
 
-        }
-        if(m_monkey.n_life == false)
-        {
-            monkey_turn *= -1;
-        }
     }
 
 }
@@ -746,7 +734,7 @@ void Widget::replay()
     m_Phases[0].m_free = false;
     m_Phases[0].m_X = 400 + rand()%100;
     m_Phases[0].m_Y = rand()%350 + 700;
-    cnt = m_Phases[0].m_X;
+    cnt = m_Phases[0].m_X + 160;
     m_Phases[0].m_Rect.moveTo(m_Phases[0].m_X,m_Phases[0].m_Y);
 
     goldcnt = 0;
