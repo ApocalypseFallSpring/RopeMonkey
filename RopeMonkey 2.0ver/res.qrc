@@ -1,0 +1,17 @@
+<RCC>
+    <qresource prefix="/">
+        <file>res/background.png</file>
+        <file>res/monkey1.png</file>
+        <file>res/monkey2.png</file>
+        <file>res/phase.png</file>
+        <file>res/monkey1_s.png</file>
+        <file>res/monkey2_s.png</file>
+        <file>res/phase_n.png</file>
+        <file>res/monkey1jump.png</file>
+        <file>res/monkey2jump.png</file>
+        <file>res/gold.png</file>
+        <file>res/gold_l.png</file>
+        <file>res/house.png</file>
+        <file>res/flower.png</file>
+    </qresource>
+</RCC>
